@@ -7,8 +7,8 @@ set print asm-demangle on
 set backtrace limit 32
 
 # detect unhandled exceptions, hard faults and panics
-# break Default_Handler
-# break HardFault_Handler
+break Default_Handler
+break HardFault_Handler
 # # run the next few lines so the panic message is printed immediately
 # # the number needs to be adjusted for your panic handler
 # commands $bpnum
@@ -17,7 +17,6 @@ set backtrace limit 32
 
 # *try* to stop at the user entry point (it might be gone due to inlining)
 break SystemInit
-break TIM2_IRQHandler
 
 # # send captured ITM to the file itm.fifo
 # # (the microcontroller SWO pin must be connected to the programmer SWO pin)
