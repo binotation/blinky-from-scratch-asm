@@ -96,6 +96,7 @@ SystemInit:
 
 .global _start
 _start:
+    // Pre-load registers with special values
     ldr     r0, =TIM2_SR
     ldr     r0, [r0]
     ldr     r1, =GPIOB_ODR
@@ -107,30 +108,26 @@ _start:
     lsl     r5, r3, #6
     mov     r6, #6
     mov     r7, #22
-    b       .
+    b       .               // Infinite loop
 
 .global TIM2_IRQHandler
 .type   TIM2_IRQHandler, %function
 TIM2_IRQHandler:
-    ldr     r8, [r0]
-    and     r9, r8, r4
-    str     r9, [r0]
-    tst     r8, #1
-    bne     toggle_led
+    ldr     r8, [r0]        // Load TIM2 status reg
+    and     r9, r8, r4      // Clear bit 0
+    str     r9, [r0]        // Write updated status reg
+    tst     r8, #1          // Check update interrupt flag
+    bne     toggle_led      // Conditional branch to toggle_led
     bx      lr
-
 toggle_led:
-    ldr     r8, [r1]
-    tst     r8, r5
-    bne     toggle_off
-
-toggle_on:
-    lsl     r8, r3, r6
+    ldr     r8, [r1]        // Load GPIOB_ODR
+    tst     r8, r5          // Check bit 6
+    bne     reset_bsrr
+set_bsrr:
+    lsl     r8, r3, r6      // 1 << 6 to set ODR
     b       write_bsrr
-
-toggle_off:
-    lsl     r8, r3, r7
-
+reset_bsrr:
+    lsl     r8, r3, r7      // 1 << 22 to reset ODR
 write_bsrr:
-    str     r8, [r2]
+    str     r8, [r2]        // Write to GPIOB_BSRR
     bx      lr
