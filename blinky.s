@@ -43,9 +43,8 @@ SystemInit:
     ldr     r0, [r0]
     lsl     r1, r1, #12 // set bit 12 mask
     lsl     r2, r1, #1
-    mvn     r2, r2 // clear bit 13 mask
     ldr     r3, [r0]
-    and     r3, r3, r2
+    bic     r3, r3, r2 // clear bit 13
     orr     r3, r3, r1
     str     r3, [r0]
 
@@ -53,9 +52,8 @@ SystemInit:
     ldr     r0, =GPIOB_OTYPER
     ldr     r0, [r0]
     lsr     r1, r1, #7 // clear bit 6 mask
-    mvn     r1, r1
     ldr     r2, [r0]
-    and     r2, r2, r1
+    bic     r2, r2, r1
     str     r2, [r0]
 
     // Set timer to 1Hz
@@ -104,7 +102,6 @@ _start:
     ldr     r2, =GPIOB_BSRR
     ldr     r2, [r2]
     mov     r3, #1
-    mvn     r4, r3
     lsl     r5, r3, #6
     mov     r6, #6
     mov     r7, #22
@@ -114,7 +111,7 @@ _start:
 .type   TIM2_IRQHandler, %function
 TIM2_IRQHandler:
     ldr     r8, [r0]        // Load TIM2 status reg
-    and     r9, r8, r4      // Clear bit 0
+    bic     r9, r8, r3      // Clear bit 0
     str     r9, [r0]        // Write updated status reg
     tst     r8, #1          // Check update interrupt flag
     bne     toggle_led      // Conditional branch to toggle_led
