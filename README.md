@@ -1,4 +1,6 @@
 # Blinky From Scratch ARM Assembly
-Implement blinky in ARM assembly.
+Implement blinky in ARM assembly. Some minimal runtime is still needed:
+- Stack (not used in this program)
+- PC-relative loads from literal pool
 
-Only notable thing is `TIM2_IRQHandler` needs to be declared as a function symbol otherwise we get a hard fault.
+`TIM2_IRQHandler` needs to be declared as a function symbol otherwise we get a hard fault.
